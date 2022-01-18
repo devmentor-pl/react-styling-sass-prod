@@ -9,6 +9,7 @@ const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 module.exports = function(env = {}) {
 
     const {production: isProd = false} = env;
+    console.log(env);
     // w zmiennej [isProd] przechowuje informację
     // w jakim trybie uruchomić webpack-a
 
@@ -18,7 +19,7 @@ module.exports = function(env = {}) {
         mode: isProd ? 'production' : 'development',
         // definiuje tryb pracy webpack-a
         devtool: isProd ? 
-            'none' : 'eval-cheap-module-source-map',
+            false : 'eval-cheap-module-source-map',
         // definiuje identyfikację kodu źródłowego
         output: {
             path: path.resolve(__dirname, 'build'),
