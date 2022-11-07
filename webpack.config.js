@@ -4,8 +4,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 // importuję plugin [html-webpack-plugin]
 const CssWebpackPlugin = require('mini-css-extract-plugin');
 // importuję plugin [mini-css-extract-plugin]
-const { CleanWebpackPlugin } = require('clean-webpack-plugin');
-// importuję plugin [clean-webpack-plugin]
+
 module.exports = function(env = {}) {
 
     const {production: isProd = false} = env;
@@ -19,13 +18,15 @@ module.exports = function(env = {}) {
         mode: isProd ? 'production' : 'development',
         // definiuje tryb pracy webpack-a
         devtool: isProd ? 
-            false : 'eval-cheap-module-source-map',
+            false : 'source-map',
         // definiuje identyfikację kodu źródłowego
         output: {
             path: path.resolve(__dirname, 'build'),
             // definiuje ścieżką wyjściową
             filename: 'app.[contenthash].js',
             // definiuję nazwę pliku wyjściowego
+            clean: true,
+            // czyszczę katalog build przed nowym buildem
         },
         module: {
             rules: [
@@ -93,32 +94,20 @@ module.exports = function(env = {}) {
                 {
                     test: /\.(png|svg|jpg|gif)$/,
                     // dodaję rozszerzenia obrazów
-                    use: {
-                        loader: 'file-loader',
-                        options: {
-                            name: '[name].[contenthash].[ext]',
-                            // ustawiam nazwę pliku
-                            outputPath: 'images',
-                            // ustawiam nazwę katalogu, do którego
-                            // będą kopiowane obrazy
-                        }
-                    }
-                    // tym razem tylko jeden loader
+                    type: 'asset/resource',
+                    generator: {
+                        filename: 'images/[name][contenthash][ext]',
+                        // ustawiam nazwę katalogu i pliku
+                    },
                 },
                 {
                     test: /\.(ttf|otf|woff|woff2)$/,
                     // dodaję rozszerzenia fontów
-                    use: {
-                        loader: 'file-loader',
-                        options: {
-                            name: '[name].[contenthash].[ext]',
-                            // ustawiam nazwę pliku
-                            outputPath: 'fonts',
-                            // ustawiam nazwę katalogu, do którego
-                            // będą kopiowane font-y
-                        }
-                    }
-                    // tym razem tylko jeden loader
+                    type: 'asset/resource',
+                    generator: {
+                        filename: 'fonts/[name][contenthash][ext]',
+                        // ustawiam nazwę katalogu i pliku
+                    },
                 },
             ]
         },
@@ -132,9 +121,7 @@ module.exports = function(env = {}) {
             new CssWebpackPlugin({
                 filename: '[name].[contenthash].css',
                 // określam nazwę pliku css
-            }),
-            new CleanWebpackPlugin(),
-            // uruchamiam czyszczenie katalogu [build]
+            })
         ]
     }
 }
